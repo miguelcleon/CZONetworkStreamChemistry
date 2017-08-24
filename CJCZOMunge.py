@@ -15,6 +15,10 @@ with open('New_AZ_streamChem_site_codes_updated.csv', 'w',newline='') as file:
             # print(row[1])
             row[1] = "CJCZO_Catalina_Marshall_Gulch_" + row[1]
             writer.writerow(row)
+        elif i == 1:
+            # Clear MST so it doesn't propogate to other CZOs
+            row[0] = ''
+            writer.writerow(row)
         else:
             writer.writerow(row)
 
@@ -35,8 +39,13 @@ for readf in files:
                 # print(row[1])
                 row[1] = "CJCZO_Jemez_" + row[1]
                 writer.writerow(row)
+            elif i == 1:
+                #Clear MST so it doesn't propogate to other CZOs
+                row[0] = ''
+                writer.writerow(row)
             else:
                 writer.writerow(row)
+
     f.close()
 
 
@@ -188,6 +197,7 @@ del df['SO4 (umoles/L)']
 del df['PO4 (umoles/L)']
 del df['Al27 (ug/L)']
 del df['Si28 (ug/L)']
+
 temp_df2 = None
 firstdfload = True
 df['total org C (mg/L)'] = df['TOC (mg/L)']

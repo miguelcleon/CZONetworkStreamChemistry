@@ -382,9 +382,15 @@ mol_units = {
 }
 
 df_SSHCZO= ut.reformat_columns_from_meq_SSH(df_SSHCZO,weights,mol_units)
-dfs = [df, df_SSHCZO]
-print(df_SSHCZO.describe())
+del df_SSHCZO['IGSN (na)']
 
+
+dfs = [df, df_SSHCZO]
+print('here here')
+print(df_SSHCZO.columns)
+df_SSHCZO['analyzed material']=df_SSHCZO['ANALYZED MATERIAL (na)']
+del df_SSHCZO['ANALYZED MATERIAL (na)']
+df_SSHCZO['DO (%)']= df_SSHCZO['DO (%) (%)']
 df = pandas.concat(dfs, join='outer') # outer
 
 pickle_out_file = 'sshczo.pkl'
@@ -532,8 +538,19 @@ df_BCCZO.iloc[0]['PO4--- (ueq/L)'] = 'NaN'
 #print(df_BCCZO.iloc[0]['inorganic P (umol/L)'])
 df_BCCZO=ut.reformat_columns_from_meq(df_BCCZO, weights, mol_units)
 #print(df_BCCZO.describe())
+# print('here here')
+print(df_BCCZO.columns)
+df_BCCZO['delta Oxygen-18 (per mill)'] = df_BCCZO['delta 18O (per mill)']
+df_BCCZO['delta Oxygen-18 std dev'] = df_BCCZO['delta 18O std dev']
+df_BCCZO['Delta Deuterium (per mill)'] = df_BCCZO['delta D (per mill)']
+df_BCCZO['Delta Deuterium std dev'] = df_BCCZO['delta D std dev']
+df_BCCZO['Deuterium excess (per mill)'] = df_BCCZO['D excess (per mill)']
 
-
+del df_BCCZO['D excess (per mill)']
+del df_BCCZO['delta 18O std dev']
+del df_BCCZO['delta 18O (per mill)']
+del df_BCCZO['delta D (per mill)']
+del df_BCCZO['delta D std dev']
 
 dfs = [df, df_BCCZO]
 
@@ -729,6 +746,13 @@ df_ERCZO.to_pickle(pickle_out_file)
 #print(df_ERCZO.describe())
 dfs = [df, df_ERCZO]
 df = pandas.concat(dfs, join='outer') # outer
+
+
+
+df.index = pd.MultiIndex.from_tuples(df.index,
+                                     names=['SiteCode', 'SampleCode','DateTime'])
+
+del df['']
 
 csv_out_file = 'cjczo-lczo-ssczo-sshczo-bcczo-erczo-agg-includeall.csv'
 df.to_csv(csv_out_file)

@@ -1,4 +1,4 @@
-SiteCode,SampleCode,Sample_Date,DateTime,Gage_Ht,Temperature  C,pH (pH),EC (uS/cm),Cl (mg/L),NO3-N (ug N/L),SO4 (mg/L),Na (mg/L),K (mg/L),Mg (mg/L),Ca (mg/L),NH4-N (ug/L),PO4 (mg/L),dissolved org C (mg/L),dissolved inorganic C (mg/L),total dissolved N (mg/L),total dissolved P (ug P/L),SiO2 (mg/L),dissolved org N (mg/L),total suspended sediment (mg/L)
+SiteCode,SampleCode,Sample_Date,DateTime,Gage_Ht,Temperature  (C),pH (pH),EC (uS/cm),Cl (mg/L),NO3-N (ug N/L),SO4 (mg/L),Na (mg/L),K (mg/L),Mg (mg/L),Ca (mg/L),NH4-N (ug/L),PO4 (mg/L),dissolved org C (mg/L),dissolved inorganic C (mg/L),total dissolved N (mg/L),total dissolved P (ug P/L),SiO2 (mg/L),dissolved org N (mg/L),total suspended sediment (mg/L)
 QS,100010001,1/6/1983,1/6/1983 0:00,3.9,-9999,7.15,37.8,4.9,40,1.67,3.9,0.22,1.24,1.76,5.1,-9999,-9999,-9999,-9999,-9999,3.4,-9999,-9999
 QT,100020001,5/24/1983,5/24/1983 0:00,-9999,-9999,7.64,80.8,7.5,40,1.29,6.51,0.28,4.05,5.23,2.5,-9999,-9999,-9999,-9999,-9999,19.3,-9999,-9999
 RI,100030001,5/24/1983,5/24/1983 0:00,1.04,-9999,6.67,37.5,3.5,60,-9999,3.38,0.41,0.76,1.65,7.5,-9999,-9999,-9999,-9999,-9999,2,-9999,-9999
