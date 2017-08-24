@@ -577,10 +577,10 @@ def extract_df_info_ERCZO(csv_file):
 
 f = 'ERMethodsAndResultsMerged.csv'
 print('Processing: %s' % f)
-indexcols =[4,1,5]
+indexcols =[4,1,47]
 # read these data into a pandas dataframe.  Use "DateTime" as the index column
 cols, units, types, methods = extract_df_info_ERCZO(f)
-parse_dates = [cols[5]]
+parse_dates = [cols[47]]
 dtypes = dict(zip(cols, types))
 
 # read each file into a temporary dataframe
@@ -618,6 +618,19 @@ weights = {'Li7':7.016,
            'M':0,
            'n':0,
            'Sa':0,
+           'Sample id':0,
+           'descp no':0,
+           'DateTime':0,
+           'date': 0,
+           'time':0,
+           'year':0,
+           'month':0,
+           'day':0,
+           'hour':0,
+           'minute':0,
+           'filter pore-size':0,
+           'method':0,
+           'method No.':0,
            }
 
 mol_units = {
@@ -650,10 +663,25 @@ mol_units = {
            'M':0,
            'n':0,
            'Sa':0,
+           'Sample id':0,
+           'descp no':0,
+           'DateTime':0,
+           'date':0,
+           'time':0,
+           'year':0,
+           'month': 0,
+           'day': 0,
+           'hour': 0,
+           'minute': 0,
+           'filter pore-size': 0,
+           'method': 0,
+           'method No.': 0,
            }
 i=0
 for col in df_ERCZO.columns:
-    print(col)
+    if col == 'Li7 (nM )':
+        print('HERE HERE')
+        print(col)
     i+=1
     weight = 0
     real_mol_name = ''
@@ -670,6 +698,7 @@ for col in df_ERCZO.columns:
         unit = mol_units[molecule]
         if not weight ==0:
             print(molecule + ": " + str(weight))
+            print(unit)
             real_mol_name = molecule
             real_unit = unit
             real_weight = weight
@@ -682,8 +711,11 @@ for col in df_ERCZO.columns:
             df_ERCZO[new_col_name] = mgL
             del df_ERCZO[col]
         if real_unit == 'ug/L':
-            # print(df_ERCZO[col].head())
-            # print(real_weight)
+            #if col == 'Li7 (nM )':
+            print("here")
+            print(col)
+            print(df_ERCZO[col].head())
+            print(real_weight)
             ugL = df_ERCZO[col] * real_weight / 1000.0
             df_ERCZO[new_col_name] = ugL
             del df_ERCZO[col]

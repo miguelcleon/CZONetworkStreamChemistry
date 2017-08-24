@@ -153,7 +153,10 @@ dfs=[df_ERCZO,df_ERCZOMethod]
 #df = pandas.concat(dfs, join='inner', keys=['SampleCode', 'DateTime']) # outer
 df = df_ERCZO.merge(df_ERCZOMethod, how='left', on=['SampleCode (na)','SiteCode (na)'])
 
-
+print(df.columns)
+del df['DateTime (na)_x']
+df['DateTime'] = df['DateTime (na)_y']
+del df['DateTime (na)_y']
 csv_out_file = 'ERMethodsAndResultsMerged.csv'
 df.to_csv(csv_out_file)
 print('Number of rows in combo df: %d' % len(df))
