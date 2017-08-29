@@ -83,6 +83,10 @@ NO3_mgl = df_Luquillo['NO3-N (ug N/L)'] / 1000
 df_Luquillo['NO3 (mg/L)'] = NO3_mgl
 del df_Luquillo['NO3-N (ug N/L)']
 
+NH4_mgl = df_Luquillo['NH4-N (ug/L)'] /1000
+df_Luquillo['NH4 (mg/L)'] = NO3_mgl
+del df_Luquillo['NH4-N (ug/L)']
+
 matched = []
 for i in range(0, len(df.columns)):
     try:
@@ -185,7 +189,7 @@ Alkalinity_mgl = df_SSCZO['Alkalinity (ueq L-1)'] * Alkalinity_mol_weight / 1000
 df_SSCZO['Alkalinity (mg/L)'] = Alkalinity_mgl
 H_mol_weight = 1.00794
 H_mgl = df_SSCZO['H+ (ueq L-1)'] * H_mol_weight / 1000
-df_SSCZO['H+ (mg/L)'] = H_mgl
+df_SSCZO['H (mg/L)'] = H_mgl
 
 EC_mS = df_SSCZO['EC - Electrical Conductivity  (mS/cm)'] * 1000
 df_SSCZO['EC (uS/cm)'] = EC_mS
@@ -391,6 +395,7 @@ print(df_SSHCZO.columns)
 df_SSHCZO['analyzed material']=df_SSHCZO['ANALYZED MATERIAL (na)']
 del df_SSHCZO['ANALYZED MATERIAL (na)']
 df_SSHCZO['DO (%)']= df_SSHCZO['DO (%) (%)']
+del  df_SSHCZO['DO (%) (%)']
 df = pandas.concat(dfs, join='outer') # outer
 
 pickle_out_file = 'sshczo.pkl'
@@ -507,11 +512,11 @@ mol_units = {
             'particulate N': 'umol/L',
             'dissolved org N': 'umol/L',
             'inorganic N': 'umol/L',
-            'total P': 'umol/L',
-            'total dissolved P': 'umol/L',
-            'particulate P': 'umol/L',
-            'dissolved org P': 'umol/L',
-            'inorganic P': 'umol/L',
+            'total P': 'umol/L to ug',
+            'total dissolved P': 'umol/L to ug',
+            'particulate P': 'umol/L to ug',
+            'dissolved org P': 'umol/L to ug',
+            'inorganic P': 'umol/L to ug',
             'delta 18O': 'None',
             'delta 18O std dev':'None',
             'delta D': 'None',
@@ -606,7 +611,9 @@ df_ERCZO = pandas.read_csv(f, sep=',', names=cols, dtype=dtypes,
                           skiprows=1, index_col=indexcols)
 print('Number of rows in temp DF: %d' % len(df_ERCZO))
 #https://environmentalchemistry.com/yogi/periodic/Ca-pg2.html
-weights = {'Li7':7.016,
+#Hyojin asked that we leave out trace elements until data are published.
+# change weights_all and mol_units_all to weights and mol_units to include them again when she gives ok
+weights_all = {'Li7':7.016,
            'B11':11.0093,
            'Ca43':42.9588,
            'Rb85':84.9118,
@@ -631,6 +638,95 @@ weights = {'Li7':7.016,
            'Mo98':97.9054,
            'Ba138':137.9052,
            'K39':38.9637,
+           'nM':0,
+           'M':0,
+           'n':0,
+           'Sa':0,
+           'Sample id':0,
+           'descp no':0,
+           'DateTime':0,
+           'date': 0,
+           'time':0,
+           'year':0,
+           'month':0,
+           'day':0,
+           'hour':0,
+           'minute':0,
+           'filter pore-size':0,
+           'method':0,
+           'method No.':0,
+           }
+
+mol_units_all = {
+           'B11':'ug/L',
+           'Ca43':'ug/L',
+           'Ca44':'ug/L',
+           'Rb85':'ng/L',
+           'Sr88':'ng/L',
+           'In115':'ng/L',
+           'Na23':'ug/L',
+           'Mg25':'ug/L',
+           'Al27': 'mg/L',
+           'Si28':'ug/L',
+           'Li7':'ug/L',
+           'P31':'ug/L',
+           'Mn55':'ug/L',
+           'Fe56':'ug/L',
+           'Fe57': 'ug/L',
+           'Co59':'ug/L',
+           'Ni60':'ug/L',
+           'Cu66':'ug/L',
+           'Cu65':'ug/L',
+           'Cu63':'ug/L',
+           'Zn66':'ug/L',
+           'Zn64':'ug/L',
+           'Mo98':'ng/L',
+           'Ba138':'ng/L',
+           'K39':'ug/L',
+           'nM':0,
+           'M':0,
+           'n':0,
+           'Sa':0,
+           'Sample id':0,
+           'descp no':0,
+           'DateTime':0,
+           'date':0,
+           'time':0,
+           'year':0,
+           'month': 0,
+           'day': 0,
+           'hour': 0,
+           'minute': 0,
+           'filter pore-size': 0,
+           'method': 0,
+           'method No.': 0,
+           }
+weights = {'Li7':0,
+           'B11':0,
+           'Si28': 27.9769,
+           'Mg25':24.9858,
+           'Ca43':42.9588,
+           'Ca44':43.9555,
+           'K39':38.9637,
+           'Na23':22.9898,
+           'Rb85':0,
+           'Sr88':0,
+           'In115':	0,
+           'Al27':0,
+           'P31':0,
+           'Mn55':0,
+           'Fe56':0,
+           'Fe57':0,
+           'Co59':0,
+           'Ni60':0,
+           'Cu63':0,
+           'Cu65':0,
+           'Cu66':0,
+           'Zn66':0,
+           'Zn64':0,
+           'Mo98':0,
+           'Ba138':0,
+
            'nM':0,
            'M':0,
            'n':0,
@@ -694,6 +790,7 @@ mol_units = {
            'method': 0,
            'method No.': 0,
            }
+
 i=0
 for col in df_ERCZO.columns:
     if col == 'Li7 (nM )':
@@ -721,7 +818,7 @@ for col in df_ERCZO.columns:
             # print(weight)
             # print("unit")
             # print(unit)
-        if not weight ==0:
+        if not unit ==0:
             print(molecule + ": " + str(weight))
             print(unit)
             real_mol_name = molecule
@@ -732,21 +829,19 @@ for col in df_ERCZO.columns:
         if real_unit == 'mg/L':
             # print(df_ERCZO[col].head())
             # print(real_weight)
-            mgL = df_ERCZO[col] * real_weight / 1000000.0
-            df_ERCZO[new_col_name] = mgL
+            if real_weight > 0:
+                mgL = df_ERCZO[col] * real_weight / 1000000.0
+                df_ERCZO[new_col_name] = mgL
             del df_ERCZO[col]
         if real_unit == 'ug/L':
-            if col == 'Li7 (nM )':
-                print("here")
-                print(col)
-                print(df_ERCZO[col].head())
-                print(real_weight)
-            ugL = df_ERCZO[col] * real_weight / 1000.0
-            df_ERCZO[new_col_name] = ugL
+            if real_weight >0:
+                ugL = df_ERCZO[col] * real_weight / 1000.0
+                df_ERCZO[new_col_name] = ugL
             del df_ERCZO[col]
         if real_unit == 'ng/L':
-            ngL = df_ERCZO[col] * real_weight / 1.0
-            df_ERCZO[new_col_name] = ngL
+            if real_weight > 0:
+                ngL = df_ERCZO[col] * real_weight / 1.0
+                df_ERCZO[new_col_name] = ngL
             del df_ERCZO[col]
 
 pickle_out_file = 'erczo.pkl'

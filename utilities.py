@@ -155,6 +155,15 @@ def reformat_columns_from_meq(df, weights, mol_units):
                 umolL = df[col] * real_weight / 1000.0
                 df[new_col_name] = umolL
                 del df[col]
+            if real_unit == 'umol/L to ug':
+                    # print(df[col].head())
+                    # print(real_weight)
+                    # print(col)
+                    # print("new name " + new_col_name)
+                    new_col_name = real_mol_name + " (ug/L)"
+                    umolL = df[col] * real_weight
+                    df[new_col_name] = umolL
+                    del df[col]
             #except KeyError:
             #    print(molecule)
     return df

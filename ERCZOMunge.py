@@ -158,12 +158,13 @@ del df['DateTime (na)_x']
 df['DateTime'] = df['DateTime (na)_y']
 del df['DateTime (na)_y']
 # only use sample with methods 7 and 9
-df = df[(df['method No. (na)'] == '7') | (df['method No. (na)'] == '9')]
+df = df[(df['method No. (na)'] == '7') | (df['method No. (na)'] == '9')| (df['method No. (na)'] == '0')
+        | (df['method No. (na)'] == '1') | (df['method No. (na)'] == '2')]
 csv_out_file = 'ERMethodsAndResultsMerged.csv'
 df.to_csv(csv_out_file)
 print('Number of rows in combo df: %d' % len(df))
-print(df.describe())
-df.filter(like='bbi', axis=0)
 
+df.where(df < 0, 0)
+print(df.describe())
 #df2 = df[df['method No. (na)'] == '7' ] #| df['method No. (na)'] == 9
 #print('Number of rows in filtered combo df: %d' % len(df2))
