@@ -700,19 +700,27 @@ for col in df_ERCZO.columns:
         print('HERE HERE')
         print(col)
     i+=1
+    print(i)
     weight = 0
     real_mol_name = ''
     real_unit = ''
     real_weight = 0
-    if i >9:
+    if i >7:
         molecules = col.split('(')#re.findall(r"[a-zA-Z][a-zA-Z]\d{2}", col)
         molecule = molecules[0]
         #count = len(molecules)
-        print(molecules)
+
 
         molecule = molecule.strip()
         weight = weights[molecule]
         unit = mol_units[molecule]
+        # if col == 'Li7 (nM )':
+            # print('HERE HERE')
+            # print(molecule)
+            # print("weight")
+            # print(weight)
+            # print("unit")
+            # print(unit)
         if not weight ==0:
             print(molecule + ": " + str(weight))
             print(unit)
@@ -720,7 +728,7 @@ for col in df_ERCZO.columns:
             real_unit = unit
             real_weight = weight
         new_col_name = real_mol_name + " (" + real_unit + ")"
-        # print(new_col_name)
+        print(new_col_name)
         if real_unit == 'mg/L':
             # print(df_ERCZO[col].head())
             # print(real_weight)
@@ -728,11 +736,11 @@ for col in df_ERCZO.columns:
             df_ERCZO[new_col_name] = mgL
             del df_ERCZO[col]
         if real_unit == 'ug/L':
-            #if col == 'Li7 (nM )':
-            print("here")
-            print(col)
-            print(df_ERCZO[col].head())
-            print(real_weight)
+            if col == 'Li7 (nM )':
+                print("here")
+                print(col)
+                print(df_ERCZO[col].head())
+                print(real_weight)
             ugL = df_ERCZO[col] * real_weight / 1000.0
             df_ERCZO[new_col_name] = ugL
             del df_ERCZO[col]
