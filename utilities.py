@@ -1,4 +1,5 @@
 import pandas
+import pandas as pd
 import matplotlib.pyplot as plt
 from dateutil import parser
 import csv
@@ -233,7 +234,9 @@ def reformat_columns_from_meq_SSH(df, weights, mol_units):
                 #print(real_weight)
                 #print(col)
                 #print("new name " + new_col_name)
-                umolL = df[col] * real_weight / 1000.0
+                umolL = pd.to_numeric(df[col], errors='coerce')* real_weight / 1000.0
+                # umolL = df[col] * real_weight / 1000.0
+                umolL = umolL.fillna(df[col])
                 df[new_col_name] = umolL
                 del df[col]
             #except KeyError:

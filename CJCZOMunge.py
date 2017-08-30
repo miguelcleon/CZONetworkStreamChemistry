@@ -5,25 +5,49 @@ import csv
 import utilities as ut
 # preprocess files
 f = open('New_AZ_streamChem.csv','r')
+
 reader = csv.reader(f)
+
 i=0
+CJ_sites = []
 with open('New_AZ_streamChem_site_codes_updated.csv', 'w',newline='') as file:
-    writer = csv.writer(file,delimiter=',')
-    for row in reader:
-        i += 1
-        if i > 4:
-            # print(row[1])
-            row[1] = "CJCZO_Catalina_Marshall_Gulch_" + row[1]
-            writer.writerow(row)
-        elif i == 1:
-            # Clear MST so it doesn't propogate to other CZOs
-            row[0] = ''
-            writer.writerow(row)
-        else:
-            writer.writerow(row)
+    with open('CJCZO_sites_filtered.csv', 'w', newline='') as sites_out:
+        writer = csv.writer(file,delimiter=',')
+        sites_out_writer = csv.writer(sites_out, delimiter=',')
+        for row in reader:
+
+            f_sites = open('CJCZO_Sites.csv', 'r')
+            sites_reader = csv.reader(f_sites)
+            i += 1
+            if i > 4:
+                # print(row[1])
+                found_site = False
+                for site_row in sites_reader:
+                    found_site = False
+                    #print('site_row: ' + site_row[0] + ' data row: '+ row[1])
+                    if row[1] == site_row[0]:
+                        #print('matching site row')
+                        #print(site_row[0])
+                        for CJ_site in CJ_sites:
+                            if CJ_site == row[1]:
+                                found_site = True
+                    if not found_site and row[1] == site_row[0]:
+                        CJ_sites.append(site_row[0])
+                        site_row[0] = "CJCZO_Catalina_Marshall_Gulch_" +site_row[0]
+                        sites_out_writer.writerow(site_row)
+
+                row[1] = "CJCZO_Catalina_Marshall_Gulch_" + row[1]
+                writer.writerow(row)
+            elif i == 1:
+                # Clear MST so it doesn't propogate to other CZOs
+                row[0] = ''
+                writer.writerow(row)
+            else:
+                writer.writerow(row)
+            f_sites.close()
 
 f.close()
-
+print(CJ_sites)
 files = ['CJCZO - jemez - NM_StreamWater_Chem_2011.csv','CJCZO - jemez - NM_StreamWater_Chem_2012.csv',
          'CJCZO - jemez - NM_StreamWater_Chem_2013.csv','CJCZO - jemez - NM_StreamWater_Chem_to2010.csv',]
 for readf in files:
@@ -32,23 +56,41 @@ for readf in files:
     reader = csv.reader(f)
     i = 0
     with open(readf.split('.')[0] + '_site_codes_updated.csv', 'w',newline='') as file:
-        writer = csv.writer(file, delimiter=',')
-        for row in reader:
-            i += 1
-            if i > 4:
-                # print(row[1])
-                row[1] = "CJCZO_Jemez_" + row[1]
-                writer.writerow(row)
-            elif i == 1:
-                #Clear MST so it doesn't propogate to other CZOs
-                row[0] = ''
-                writer.writerow(row)
-            else:
-                writer.writerow(row)
+        with open('CJCZO_sites_filtered.csv', 'a', newline='') as sites_out:
+            writer = csv.writer(file, delimiter=',')
+            sites_out_writer = csv.writer(sites_out, delimiter=',')
+            for row in reader:
+                f_sites = open('CJCZO_Sites.csv', 'r')
+                sites_reader = csv.reader(f_sites)
+                i += 1
+                if i > 4:
+                    found_site = False
+                    for site_row in sites_reader:
+                        found_site = False
+                        if row[1] == site_row[0]:
+                            #print("mathing row")
+                            #print(row[1])
+                            for CJ_site in CJ_sites:
+                                if CJ_site == row[1]:
+                                    found_site = True
+                        if not found_site and row[1] == site_row[0]:
+                            CJ_sites.append(site_row[0])
+                            site_row[0] = "CJCZO_Jemez_" + site_row[0]
+                            sites_out_writer.writerow(site_row)
+                    # print(row[1])
+                    row[1] = "CJCZO_Jemez_" + row[1]
+                    writer.writerow(row)
+                elif i == 1:
+                    #Clear MST so it doesn't propogate to other CZOs
+                    row[0] = ''
+                    writer.writerow(row)
+                else:
+                    writer.writerow(row)
+                f_sites.close()
 
     f.close()
 
-
+f_sites.close()
 
 
 def extract_df_info(csv_file):
@@ -109,7 +151,7 @@ dflarge = pandas.concat(dfs)
 df = pandas.concat(dfs, join='inner')
 print('Number of rows in DF: %d' % len(dflarge))
 print('Number of rows in DF small: %d' % len(df))
-print(dflarge.columns)
+# print(dflarge.columns)
 # indexes = 'SiteCode (na)','DateTime (MST)',
 columns = ['NO3 (umoles/L)','F (umoles/L)','Cl (umoles/L)','NO2 (umoles/L)',
                       'Br (umoles/L)','SO4 (umoles/L)','PO4 (umoles/L)',
@@ -123,7 +165,7 @@ new = dflarge.filter(columns, axis=1)
 
 df =df.join(new, how='outer') #on=indexes,
 print('Number of rows in DF small: %d' % len(df))
-print(df.head())
+# print(df.head())
 # df['NO3 (umoles/L)'] = dflarge['NO3 (umoles/L)']
 # df['F (umoles/L)'] = dflarge['F (umoles/L)']
 # df['Cl (umoles/L)'] = dflarge['Cl (umoles/L)']
@@ -186,7 +228,7 @@ PO4_mol_weight = 94.9714
 PO4_mgl = df['PO4 (umoles/L)'] * PO4_mol_weight / 1000
 df['PO4 (mg/L)'] = df['PO4 (mg/L)'].combine_first(PO4_mgl)
 
-print(df.columns)
+# print(df.columns)
 
 del df['Br (umoles/L)']
 del df['NO3 (umoles/L)']
@@ -204,6 +246,7 @@ df['total org C (mg/L)'] = df['TOC (mg/L)']
 df['total N (mg/L)']=df['TN (mg/L)']
 #TIC (mg/L)
 df['total inorganic C (mg/L)']=df['TIC (mg/L)']
+df['MethodCode'] =14
 del df['TOC (mg/L)']
 del df['TN (mg/L)']
 del df['TIC (mg/L)']

@@ -1,2 +1,8 @@
 Tried to convert units for the two Alkalinity columns but the value ranges didn't seem comparable, so I left them as
 seperate columns
+
+BCCZO 2 values are possibly no detect; <0.161 and <0.28 but those numbers don't match the detection limit.
+I Set these to blank because it's only 2 values
+					                                        Cl- (ueq/L)	NO3- (ueq/L)
+GREEN LAKE 5	7/2/1992	DNS	    7/2/1992	    1287	<0.28
+GREEN LAKE 5	10/7/1993	1000	10/7/1993 10:00	1309		        <0.161
