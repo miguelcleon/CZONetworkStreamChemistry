@@ -87,6 +87,8 @@ NH4_mgl = df_Luquillo['NH4-N (ug/L)'] /1000
 df_Luquillo['NH4 (mg/L)'] = NO3_mgl
 del df_Luquillo['NH4-N (ug/L)']
 
+df_Luquillo['MethodCode'] = 10
+
 matched = []
 for i in range(0, len(df.columns)):
     try:
@@ -137,7 +139,7 @@ with open('SSCZOStreamChem_site_codes_updated.csv', 'w',newline='') as file:
     writer = csv.writer(file,delimiter=',')
     for row in reader:
         i += 1
-        if i > 3:
+        if i > 2:
             # print(row[1])
             if row[2] in site_code_to_name:
                 site_name = site_code_to_name[row[2]]
@@ -197,6 +199,8 @@ del df_SSCZO['Alkalinity (ueq L-1)']
 del df_SSCZO['H+ (ueq L-1)']
 del df_SSCZO['EC - Electrical Conductivity  (mS/cm)']
 print(df_SSCZO.describe())
+df_SSCZO['MethodCode'] =13
+
 
 dfs = [df, df_SSCZO]
 # df =df.join(df_Luquillo, how='outer') #on=indexes,
@@ -389,13 +393,15 @@ df_SSHCZO= ut.reformat_columns_from_meq_SSH(df_SSHCZO,weights,mol_units)
 del df_SSHCZO['IGSN (na)']
 
 
-dfs = [df, df_SSHCZO]
-print('here here')
+
 print(df_SSHCZO.columns)
 df_SSHCZO['analyzed material']=df_SSHCZO['ANALYZED MATERIAL (na)']
 del df_SSHCZO['ANALYZED MATERIAL (na)']
 df_SSHCZO['DO (%)']= df_SSHCZO['DO (%) (%)']
 del  df_SSHCZO['DO (%) (%)']
+df_SSHCZO['MethodCode'] = 11
+
+dfs = [df, df_SSHCZO]
 df = pandas.concat(dfs, join='outer') # outer
 
 pickle_out_file = 'sshczo.pkl'
@@ -422,9 +428,9 @@ with open('BCCZOGreenLakes_site_codes_updated.csv', 'w',newline='') as file:
         i += 1
         if i > 1:
             # print(row[1])
-            if row[1] in site_code_to_name:
-                site_name = site_code_to_name[row[1]]
-                row[1] = "BCCZO_" + site_name
+            if row[0] in site_code_to_name:
+                site_name = site_code_to_name[row[0]]
+                row[0] = "BCCZO_" + site_name
                 writer.writerow(row)
             if row[2] == 'DNS':
                 row[3] = row[1]
@@ -550,6 +556,7 @@ df_BCCZO['delta Oxygen-18 std dev'] = df_BCCZO['delta 18O std dev']
 df_BCCZO['Delta Deuterium (per mill)'] = df_BCCZO['delta D (per mill)']
 df_BCCZO['Delta Deuterium std dev'] = df_BCCZO['delta D std dev']
 df_BCCZO['Deuterium excess (per mill)'] = df_BCCZO['D excess (per mill)']
+df_BCCZO['MethodCode'] =12
 
 del df_BCCZO['D excess (per mill)']
 del df_BCCZO['delta 18O std dev']
@@ -599,10 +606,10 @@ def extract_df_info_ERCZO(csv_file):
 
 f = 'ERMethodsAndResultsMerged.csv'
 print('Processing: %s' % f)
-indexcols =[4,1,47]
+indexcols =[4,1,46]
 # read these data into a pandas dataframe.  Use "DateTime" as the index column
 cols, units, types, methods = extract_df_info_ERCZO(f)
-parse_dates = [cols[47]]
+parse_dates = [cols[46]]
 dtypes = dict(zip(cols, types))
 
 # read each file into a temporary dataframe
@@ -743,7 +750,7 @@ weights = {'Li7':0,
            'minute':0,
            'filter pore-size':0,
            'method':0,
-           'method No.':0,
+           'MethodCode':0,
            }
 
 mol_units = {
@@ -788,7 +795,7 @@ mol_units = {
            'minute': 0,
            'filter pore-size': 0,
            'method': 0,
-           'method No.': 0,
+           'MethodCode': 0,
            }
 
 i=0

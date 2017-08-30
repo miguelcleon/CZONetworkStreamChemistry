@@ -157,9 +157,13 @@ print(df.columns)
 del df['DateTime (na)_x']
 df['DateTime'] = df['DateTime (na)_y']
 del df['DateTime (na)_y']
+
 # only use sample with methods 7 and 9
 df = df[(df['method No. (na)'] == '7') | (df['method No. (na)'] == '9')| (df['method No. (na)'] == '0')
         | (df['method No. (na)'] == '1') | (df['method No. (na)'] == '2')]
+
+df['MethodCode']=df['method No. (na)']
+del df['method No. (na)']
 csv_out_file = 'ERMethodsAndResultsMerged.csv'
 df.to_csv(csv_out_file)
 print('Number of rows in combo df: %d' % len(df))
