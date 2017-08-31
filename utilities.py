@@ -98,7 +98,8 @@ def reformat_columns_from_meq(df, weights, mol_units):
         real_mol_name = ''
         real_unit = ''
         real_weight = 0
-        if i >7:
+        if i >6:
+            print(col)
             molecules = col.split('(')#re.findall(r"[a-zA-Z][a-zA-Z]\d{2}", col)
             molecule = molecules[0]
             if "+" in molecule:
@@ -133,6 +134,10 @@ def reformat_columns_from_meq(df, weights, mol_units):
                 real_weight = weight
             new_col_name = real_mol_name + " (mg/L)"
             # print(new_col_name)
+            if col == 'alkalinity (ueq/L)':
+                print(real_weight)
+                print(col)
+                print("new name " + new_col_name)
             if real_unit == 'mg/L':
                 # print(df_ERCZO[col].head())
                 # print(real_weight)
@@ -142,9 +147,8 @@ def reformat_columns_from_meq(df, weights, mol_units):
             if real_unit == 'ueq/L':
                 # print(df_ERCZO[col].head())
                 # print(real_weight)
-                #print(real_weight)
-                #print(col)
-                #print("new name " + new_col_name)
+
+
                 ugL = df[col] * real_weight / 1000.0
                 df[new_col_name] = ugL
                 del df[col]

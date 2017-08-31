@@ -60,7 +60,7 @@ newcolumns = []
 for column in df_ERCZO_described.columns:
     newcolumns.append(column + "_ERCZO")
 df_ERCZO_described.columns = newcolumns
-
+print(df_ERCZO_described)
 newcolumns = []
 for column in df_SSCZO_described.columns:
     newcolumns.append(column + "_SSCZO")

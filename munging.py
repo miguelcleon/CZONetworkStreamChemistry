@@ -431,7 +431,6 @@ with open('BCCZOGreenLakes_site_codes_updated.csv', 'w',newline='') as file:
             if row[0] in site_code_to_name:
                 site_name = site_code_to_name[row[0]]
                 row[0] = "BCCZO_" + site_name
-                writer.writerow(row)
             if row[2] == 'DNS':
                 row[3] = row[1]
                 writer.writerow(row)
@@ -445,6 +444,7 @@ with open('BCCZOGreenLakes_site_codes_updated.csv', 'w',newline='') as file:
                 writer.writerow(row)
         else:
             writer.writerow(row)
+
 
 
 f = 'BCCZOGreenLakes_site_codes_updated.csv'
@@ -461,6 +461,7 @@ df_BCCZO = pandas.read_csv(f, sep=',', names=cols, dtype=dtypes,
                                                               '<0.161','ND','trace','EQCL'],
                           skiprows=1, index_col=indexcols)
 
+
 weights = {
             'NO3':62.0049,
             'Cl':35.4530,
@@ -473,6 +474,7 @@ weights = {
             'Na':22.989769280,
             'K':39.09830,
             'PO4': 94.9714,
+            'alkalinity': 61.0168,
             'cation sum':0,
             'anion sum':0,
             'charge balance':0,
@@ -507,6 +509,7 @@ mol_units = {
             'NH4':'ueq/L',
             'Ca':'ueq/L',
             'Mg':'ueq/L',
+            'alkalinity': 'ueq/L',
             'Na':'ueq/L',
             'K': 'ueq/L',
             'PO4': 'ueq/L',
@@ -542,11 +545,17 @@ mol_units = {
 # print(df_BCCZO.iloc[0]['inorganic P (umol/L)'])
 #FIX ME
 #df_BCCZO.set_value('GREEN LAKE 5',1500,'inorganic P (umol/L)','NaN') #.iloc[0]['inorganic P (umol/L)'] = 'NaN'
-df_BCCZO.iloc[0]['inorganic P (umol/L)'] = 'NaN'
+#df_BCCZO.index[0] = {'PO4--- (ueq/L)':'NaN'}
+df_BCCZO.ix[0, 'inorganic P (umol/L)'] = float('nan')
+#df_BCCZO.iloc[0]['inorganic P (umol/L)'] = 'NaN'
 # print(df_BCCZO.iloc[0]['inorganic P (umol/L)'])
 #df_BCCZO.set_value('GREEN LAKE 5',1500,'PO4--- (ueq/L)','NaN') # .iloc[0]['PO4--- (ueq/L)'] = 'NaN'
-df_BCCZO.iloc[0]['PO4--- (ueq/L)'] = 'NaN'
+#df_BCCZO.iloc[0]['PO4--- (ueq/L)'] = 'NaN'
+df_BCCZO.ix[0, 'PO4--- (ueq/L)'] = float('nan')
+#df_BCCZO.iloc[0]['alkalinity (ueq/L)'] = 'NaN'
+df_BCCZO.ix[0, 'alkalinity (ueq/L)'] = float('nan')
 #print(df_BCCZO.iloc[0]['inorganic P (umol/L)'])
+print("HERE HERE HERE")
 df_BCCZO=ut.reformat_columns_from_meq(df_BCCZO, weights, mol_units)
 #print(df_BCCZO.describe())
 # print('here here')
@@ -556,6 +565,7 @@ df_BCCZO['delta Oxygen-18 std dev'] = df_BCCZO['delta 18O std dev']
 df_BCCZO['Delta Deuterium (per mill)'] = df_BCCZO['delta D (per mill)']
 df_BCCZO['Delta Deuterium std dev'] = df_BCCZO['delta D std dev']
 df_BCCZO['Deuterium excess (per mill)'] = df_BCCZO['D excess (per mill)']
+df_BCCZO['Alkalinity (mg/L)'] = df_BCCZO['alkalinity (mg/L)']
 df_BCCZO['MethodCode'] =12
 
 del df_BCCZO['D excess (per mill)']
@@ -563,7 +573,11 @@ del df_BCCZO['delta 18O std dev']
 del df_BCCZO['delta 18O (per mill)']
 del df_BCCZO['delta D (per mill)']
 del df_BCCZO['delta D std dev']
-
+del df_BCCZO['alkalinity (mg/L)']
+#df.loc[(df.index['a']
+#df['Tenant'].replace('', np.nan, inplace=True)
+#df.dropna(subset=['Tenant'], inplace=True)
+#df_BCCZO = df_BCCZO[(df_BCCZO.index.get_level_values('DateTime').strip() != '') ]
 dfs = [df, df_BCCZO]
 
 pickle_out_file = 'bcczo.pkl'
@@ -854,6 +868,16 @@ for col in df_ERCZO.columns:
 pickle_out_file = 'erczo.pkl'
 df_ERCZO.to_pickle(pickle_out_file)
 #print(df_ERCZO.describe())
+del df_ERCZO['year (na)']
+del df_ERCZO['date (na)']
+del df_ERCZO['time (na)']
+del df_ERCZO['month (na)']
+# del df_ERCZO['day (na))']
+del df_ERCZO['hour (na)']
+del df_ERCZO['minute (na)']
+del df_ERCZO['record count (na)']
+del df_ERCZO['storage_time_days (na)']
+
 dfs = [df, df_ERCZO]
 df = pandas.concat(dfs, join='outer') # outer
 
